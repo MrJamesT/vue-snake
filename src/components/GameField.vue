@@ -5,7 +5,7 @@
 				v-for="x in gameWidth"
 				:key="x"
 				class="square"
-				:class="{ 'red': pointX == x && pointY == y && !isSnake(x, y), 'white': isSnake(x, y), 'black': !isSnake(x, y) && (pointX != x || pointY != y) }"
+				:class="{ 'scorePoint': pointX == x && pointY == y && !isSnake(x, y), 'snake': isSnake(x, y), 'grass': !isSnake(x, y) && (pointX != x || pointY != y) }"
 			></div>
 		</div>
 	</div>
@@ -16,7 +16,7 @@ export default {
 	props: ['gameRunning'],
 	data() {
 		return {
-			direction: 'R',
+			direction: ['R'],
 			score: 0,
 			gameWidth: 25,
 			gameHeight: 25,
@@ -56,10 +56,10 @@ export default {
 			return combined.length > 0 ? true : false
 		},
 		move(e) {
-			if (e.keyCode == 37 && this.direction != 'R') this.direction = 'L'
-			else if (e.keyCode == 38 && this.direction != 'D') this.direction = 'U'
-			else if (e.keyCode == 39 && this.direction != 'L') this.direction = 'R'
-			else if (e.keyCode == 40 && this.direction != 'U') this.direction = 'D'
+			if (e.keyCode == 37 && this.direction[0] != 'R' && this.direction[0] != 'L') this.direction.push('L')
+			else if (e.keyCode == 38 && this.direction[0] != 'D' && this.direction[0] != 'U') this.direction.push('U')
+			else if (e.keyCode == 39 && this.direction[0] != 'L' && this.direction[0] != 'R') this.direction.push('R')
+			else if (e.keyCode == 40 && this.direction[0] != 'U' && this.direction[0] != 'D') this.direction.push('D')
 		},
 		start() {
 			// Initialize Snake in the middle
@@ -87,7 +87,7 @@ export default {
 		},
 		restart() {
 			clearInterval(this.gameInterval)
-			this.direction = 'R'
+			this.direction = ['R']
 			this.score = 0
 			this.x = []
 			this.y = []
@@ -95,16 +95,19 @@ export default {
 			this.$emit('game-finished')
 		},
 		gameLoop() {
-			if (this.direction == 'R') {
+			// Remove the executed move from the queue of moves
+			if (this.direction.length > 1) this.direction.shift()
+
+			if (this.direction[0] == 'R') {
 				this.x.push(this.x[this.x.length - 1] + 1)
 				this.y.push(this.y[this.y.length - 1])
-			} else if (this.direction == 'U') {
+			} else if (this.direction[0] == 'U') {
 				this.x.push(this.x[this.x.length - 1])
 				this.y.push(this.y[this.y.length - 1] - 1)
-			} else if (this.direction == 'L') {
+			} else if (this.direction[0] == 'L') {
 				this.x.push(this.x[this.x.length - 1] - 1)
 				this.y.push(this.y[this.y.length - 1])
-			} else if (this.direction == 'D') {
+			} else if (this.direction[0] == 'D') {
 				this.x.push(this.x[this.x.length - 1])
 				this.y.push(this.y[this.y.length - 1] + 1)
 			}
@@ -159,32 +162,46 @@ export default {
 .gameField {
 	display: flex;
 	flex-direction: column;
-	border: 15px solid #ffffff;
+	border: 15px solid #578a34;
 	border-radius: 15px;
-	background: #ffffff;
 }
 
 .squareRow {
 	display: flex;
 	flex-direction: row;
-	height: 22px;
+	height: 25px;
 }
 
 .square {
-	width: 20px;
-	height: 20px;
-	margin: 0px 2px 2px 0px;
+	width: 25px;
+	height: 25px;
+	margin: 0;
+}
+.squareRow:nth-child(even) {
+	.grass:nth-child(even) {
+		background-color: #a2d149;
+	}
+
+	.grass:nth-child(odd) {
+		background-color: #aad751;
+	}
 }
 
-.black {
-	background-color: black;
+.squareRow:nth-child(odd) {
+	.grass:nth-child(odd) {
+		background-color: #a2d149;
+	}
+
+	.grass:nth-child(even) {
+		background-color: #aad751;
+	}
 }
 
-.white {
-	background-color: white;
+.snake {
+	background-color: #4573e8;
 }
 
-.red {
-	background-color: red;
+.scorePoint {
+	background-color: #e8481d;
 }
 </style>

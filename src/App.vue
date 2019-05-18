@@ -49,9 +49,7 @@ export default {
 <style lang="scss" scoped>
 #myapp {
 	overflow: hidden;
-	background: #3a1c71;
-	background: -webkit-linear-gradient(to right, #ffaf7b, #d76d77, #3a1c71);
-	background: linear-gradient(to right, #ffaf7b, #d76d77, #3a1c71);
+	background: #4a752c;
 }
 </style>
 
