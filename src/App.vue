@@ -1,28 +1,57 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+	<v-app id="myapp">
+		<v-container align-center justify-center grid-list-md text-xs-center fill-height>
+			<v-layout align-center justify-center column>
+				<alert-dialog :modalWindow="modalWindow" :message="message" @close-modal="modalWindow = false"/>
+				<game-header :gameRunning="gameRunning" @modify-interval="modifyInterval($event)"/>
+				<game-field
+					:gameRunning="gameRunning"
+					@game-finished="gameRunning = false"
+					@alert-message="sendAlert($event)"
+				/>
+			</v-layout>
+		</v-container>
+	</v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import GameHeader from './components/GameHeader'
+import GameField from './components/GameField'
+import AlertDialog from './components/AlertDialog'
 
 export default {
-  name: "app",
-  components: {
-    HelloWorld
-  }
-};
+	name: 'App',
+	components: {
+		GameHeader,
+		GameField,
+		AlertDialog
+	},
+	data() {
+		return {
+			modalWindow: false,
+			gameRunning: false,
+			message: {}
+		}
+	},
+	methods: {
+		sendAlert(evt) {
+			this.message = evt
+			this.modalWindow = true
+		},
+		modifyInterval(evt) {
+			if (evt == 'start') this.gameRunning = true
+			else this.gameRunning = false
+		}
+	}
+}
 </script>
 
-<style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss" scoped>
+#myapp {
+	overflow: hidden;
+	background: #3a1c71;
+	background: -webkit-linear-gradient(to right, #ffaf7b, #d76d77, #3a1c71);
+	background: linear-gradient(to right, #ffaf7b, #d76d77, #3a1c71);
 }
 </style>
+
