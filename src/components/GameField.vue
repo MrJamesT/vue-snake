@@ -1,13 +1,23 @@
 <template>
 	<div class="gameField">
-		<div v-for="y in gameHeight" :key="y" class="squareRow">
-			<div
-				v-for="x in gameWidth"
-				:key="x"
-				class="square"
-				:class="{ 'scorePoint': pointX == x && pointY == y && !isSnake(x, y), 'snake': isSnake(x, y), 'grass': !isSnake(x, y) && (pointX != x || pointY != y) }"
-			></div>
-		</div>
+		<v-layout
+			column
+			v-touch="{
+				left: () => move({ keyCode: 37 }),
+				right: () => move({ keyCode: 39 }),
+				up: () => move({ keyCode: 38 }),
+				down: () => move({ keyCode: 40 })
+			}"
+		>
+			<div v-for="y in gameHeight" :key="y" class="squareRow">
+				<div
+					v-for="x in gameWidth"
+					:key="x"
+					class="square"
+					:class="{ 'scorePoint': pointX == x && pointY == y && !isSnake(x, y), 'snake': isSnake(x, y), 'grass': !isSnake(x, y) && (pointX != x || pointY != y) }"
+				></div>
+			</div>
+		</v-layout>
 	</div>
 </template>
 
@@ -160,8 +170,6 @@ export default {
 
 <style lang="scss" scoped>
 .gameField {
-	display: flex;
-	flex-direction: column;
 	border: 15px solid #578a34;
 	border-radius: 15px;
 }
@@ -169,14 +177,48 @@ export default {
 .squareRow {
 	display: flex;
 	flex-direction: row;
-	height: 25px;
+	height: 12px;
 }
 
 .square {
-	width: 25px;
-	height: 25px;
+	width: 12px;
+	height: 12px;
 	margin: 0;
 }
+
+@media (min-width: 500px) {
+	.square {
+		width: 15px;
+		height: 15px;
+	}
+
+	.squareRow {
+		height: 15px;
+	}
+}
+
+@media (min-width: 700px) {
+	.square {
+		width: 20px;
+		height: 20px;
+	}
+
+	.squareRow {
+		height: 20px;
+	}
+}
+
+@media (min-width: 1000px) {
+	.square {
+		width: 25px;
+		height: 25px;
+	}
+
+	.squareRow {
+		height: 25px;
+	}
+}
+
 .squareRow:nth-child(even) {
 	.grass:nth-child(even) {
 		background-color: #a2d149;
