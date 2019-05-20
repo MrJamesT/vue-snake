@@ -1,5 +1,5 @@
 <template>
-	<div class="gameField">
+	<div class="gameField" id="playingField">
 		<v-layout
 			column
 			v-touch="{
@@ -66,10 +66,10 @@ export default {
 			return combined.length > 0 ? true : false
 		},
 		move(e) {
-			if (e.keyCode == 37 && this.direction[0] != 'R' && this.direction[0] != 'L') this.direction.push('L')
-			else if (e.keyCode == 38 && this.direction[0] != 'D' && this.direction[0] != 'U') this.direction.push('U')
-			else if (e.keyCode == 39 && this.direction[0] != 'L' && this.direction[0] != 'R') this.direction.push('R')
-			else if (e.keyCode == 40 && this.direction[0] != 'U' && this.direction[0] != 'D') this.direction.push('D')
+			if (e.keyCode == 37 && !this.direction.includes('R') && !this.direction.includes('L')) this.direction.push('L')
+			else if (e.keyCode == 38 && !this.direction.includes('D') && !this.direction.includes('U')) this.direction.push('U')
+			else if (e.keyCode == 39 && !this.direction.includes('L') && !this.direction.includes('R')) this.direction.push('R')
+			else if (e.keyCode == 40 && !this.direction.includes('U') && !this.direction.includes('D')) this.direction.push('D')
 		},
 		start() {
 			// Initialize Snake in the middle
@@ -86,6 +86,10 @@ export default {
 
 			// Add keydown listeners for movement
 			document.addEventListener('keydown', this.move)
+			let playingField = document.querySelector('#playingField')
+			playingField.addEventListener('touchmove', function(e) {
+				e.preventDefault()
+			})
 
 			// Start movement of Snake
 			this.gameInterval = setInterval(
